@@ -1,4 +1,4 @@
-package Portafolio_Mariano;
+package com.Portafolio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,6 +1,6 @@
 
-package controller;
-import service.CategoriaService;
+package com.Portafolio.controller;
+import com.Portafolio.service.CategoriaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

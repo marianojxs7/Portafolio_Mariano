@@ -1,8 +1,8 @@
 
-package service;
+package com.Portafolio.service;
 
-import domain.Categoria;
-import repository.CategoriaRepository;
+import com.Portafolio.domain.Categoria;
+import com.Portafolio.repository.CategoriaRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

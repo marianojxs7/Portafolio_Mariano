@@ -1,7 +1,5 @@
 
-package domain;
-
-import java.io.Serializable;
+package com.Portafolio.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
