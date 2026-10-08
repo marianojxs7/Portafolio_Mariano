@@ -1,4 +1,4 @@
-package com.Portafolio.repository;
+package repository;
 
 import com.Portafolio.domain.Categoria;
 import java.util.List;
