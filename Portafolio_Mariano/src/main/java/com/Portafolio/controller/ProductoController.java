@@ -1,9 +1,9 @@
     
 package com.Portafolio.controller;
 
-import com.tienda.domain.Producto;
-import com.tienda.service.CategoriaService;
-import com.tienda.service.ProductoService;
+import com.Portafolio.domain.Producto;
+import service.CategoriaService;
+import com.Portafolio.service.ProductoService;
 import jakarta.validation.Valid;
 import java.util.Locale;
 import java.util.Optional;

@@ -4,7 +4,7 @@
  */
 package com.Portafolio.repository;
 
-import com.tienda.domain.Producto;
+import com.Portafolio.domain.Producto;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

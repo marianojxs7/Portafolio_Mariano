@@ -1,7 +1,7 @@
 
 package com.Portafolio.service;
-import com.tienda.domain.Producto;
-import com.tienda.repository.ProductoRepository;
+import com.Portafolio.domain.Producto;
+import com.Portafolio.repository.ProductoRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

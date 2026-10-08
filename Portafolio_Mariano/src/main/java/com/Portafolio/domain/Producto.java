@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.Portafolio.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -24,7 +21,7 @@ public class Producto implements Serializable {
     private Integer idCategoria;
 
     @Column(nullable = false, length = 50)
-    @NotNull(message = "La descripción no puede estar vacía.")
+    @NotBlank(message = "La descripción no puede estar vacía.")
     @Size(max = 50, message = "La descripción no puede tener más de 50 caracteres.")
     private String descripcion;
 
