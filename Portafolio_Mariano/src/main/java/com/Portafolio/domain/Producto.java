@@ -1,4 +1,3 @@
-
 package com.Portafolio.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -41,4 +40,6 @@ public class Producto implements Serializable {
     private String rutaImagen;
 
     private boolean activo;
+
+  
 }
