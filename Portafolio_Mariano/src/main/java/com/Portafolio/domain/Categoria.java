@@ -16,7 +16,6 @@ import lombok.Data;
 @Table(name = "categoria")
 public class Categoria implements Serializable {
 
-    // Se recomienda añadir un serialVersionUID
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -24,13 +23,13 @@ public class Categoria implements Serializable {
     @Column(name = "id_categoria")
     private Integer idCategoria;
 
-    @Column(unique = true, nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
+    @Column(name = "descripcion", nullable = false, unique = true, length = 50)
     private String descripcion;
 
-    @Column(length = 1024)
     @Size(max = 1024)
+    @Column(name = "ruta_imagen", length = 1024)
     private String rutaImagen;
 
     @Column(name = "activo")
