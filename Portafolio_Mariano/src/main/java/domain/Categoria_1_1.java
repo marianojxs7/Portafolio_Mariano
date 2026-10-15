@@ -1,4 +1,3 @@
-
 package com.Portafolio.domain;
 
 import jakarta.persistence.Column;

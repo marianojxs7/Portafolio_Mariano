@@ -2,9 +2,9 @@
 <section th:fragment="agregar">
 
     <!-- Button trigger modal -->
-    <div class='row py-4 mb-2 bg-light'>
-        <div class='col-md-1'></div>
-        <div class='col-md-3'>
+    <div class="row py-4 mb-2 bg-light">
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
             <button type="button" class="btn btn-primary"
                     sec:authorize="hasRole('ROLE_ADMIN')"
                     data-bs-toggle="modal"
@@ -18,6 +18,7 @@
     <!-- Modal -->
     <div class="modal fade" id="agregarCategoriaModal" tabindex="-1"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
+
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -26,57 +27,51 @@
                         <i class="fa-solid fa-layer-group"></i>
                         [[#{categoria.agregar}]]
                     </h1>
+
                     <button type="button" class="btn-close"
                             data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <form th:action="@{/categoria/guardar}"
                       th:object="${categoria}"
-                      method="post"
                       class="was-validated"
-                      enctype="multipart/form-data">
+                      enctype="multipart/form-data"
+                      method="post">
 
                     <div class="modal-body">
 
                         <div class="mb-3">
                             <label>[[#{categoria.descripcion}]]</label>
-                            <input type="text"
-                                   name="descripcion"
-                                   class="form-control"
-                                   required="true"/>
+                            <input type="text" name="descripcion"
+                                   class="form-control" required="true"/>
                         </div>
 
                         <div class="mb-3">
                             <label>[[#{categoria.activo}]]</label>
-                            <input type="checkbox"
-                                   name="activo"
+                            <input type="checkbox" name="activo"
                                    class="form-check-input"/>
                         </div>
 
                         <div class="mb-3">
                             <label>[[#{categoria.imagen}]]</label>
-                            <input type="file"
-                                   name="imagenFile"
+                            <input type="file" name="imagenFile"
                                    onchange="mostrarImagen(this);"
                                    class="form-control"/>
-                            <img id="blah"
-                                 src="#"
-                                 alt="imagen de categoria"
-                                 height="200"/>
+
+                            <img id="blah" src="#"
+                                 alt="imagen de categoria" height="200"/>
                         </div>
 
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-secondary"
+                        <button type="button" class="btn btn-secondary"
                                 data-bs-dismiss="modal">
                             <i class="fa-solid fa-xmark"></i>
                             [[#{accion.cerrar}]]
                         </button>
 
-                        <button type="submit"
-                                class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa-solid fa-floppy-disk"></i>
                             [[#{accion.guardar}]]
                         </button>
