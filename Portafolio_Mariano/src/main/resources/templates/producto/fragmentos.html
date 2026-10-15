@@ -1,90 +1,410 @@
-<!-- fragmento 1 para Agregar producto en ventana modal -->
-<section th:fragment="agregar">
 
-    <!-- Button trigger modal -->
-    <div class='row py-4 mb-2 bg-light'>
-        <div class='col-md-1'></div>
-        <div class='col-md-3'>
-            <button type="button" class="btn btn-primary"
-                    sec:authorize="hasRole('ROLE_ADMIN')"
-                    data-bs-toggle="modal"
-                    data-bs-target="#agregarCategoriaModal">
-                <i class="fa-solid fa-plus"></i>
-                [[#{producto.agregar}]]
-            </button>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras-springsecurity6">
+
+<body>
+
+    <!-- Fragmento 1: agregar producto -->
+    <section th:fragment="agregar">
+        <div class="row py-4 mb-2 bg-light">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary"
+                        sec:authorize="hasRole('ROLE_ADMIN')"
+                        data-bs-toggle="modal"
+                        data-bs-target="#agregarProductoModal">
+                    <i class="fa-solid fa-plus"></i>
+                    [[#{producto.agregar}]]
+                </button>
+            </div>
         </div>
-    </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="agregarCategoriaModal" tabindex="-1"
-         aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal fade" id="agregarProductoModal" tabindex="-1"
+             aria-labelledby="agregarProductoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="agregarProductoLabel">
+                            <i class="fa-solid fa-box"></i>
+                            [[#{producto.agregar}]]
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
 
-                <div class="modal-header bg-info text-white">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">
-                        <i class="fa-solid fa-layer-group"></i>
-                        [[#{producto.agregar}]]
-                    </h1>
-                    <button type="button" class="btn-close"
-                            data-bs-dismiss="modal" aria-label="Close"></button>
+                    <form th:action="@{/producto/guardar}" method="post"
+                          enctype="multipart/form-data" class="was-validated">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">[[#{producto.categoria}]]</label>
+                                <select name="idCategoria" class="form-select" required>
+                                    <option value="">Seleccione una categoría</option>
+                                    <option th:each="c : ${categorias}"
+                                            th:value="${c.idCategoria}"
+                                            th:text="${c.descripcion}"></option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">[[#{producto.descripcion}]]</label>
+                                <input type="text" name="descripcion"
+                                       class="form-control" maxlength="50" required/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">[[#{producto.detalle}]]</label>
+                                <textarea name="detalle" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">[[#{producto.precio}]]</label>
+                                    <input type="number" name="precio"
+                                           class="form-control" min="0.01"
+                                           step="0.01" required/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">[[#{producto.existencias}]]</label>
+                                    <input type="number" name="existencias"
+                                           class="form-control" min="0" step="1" required/>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input type="checkbox" name="activo" value="true"
+                                       class="form-check-input" id="productoActivoNuevo"/>
+                                <label class="form-check-label" for="productoActivoNuevo">
+                                    [[#{producto.activo}]]
+                                </label>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">[[#{producto.imagen}]]</label>
+                                <input type="file" name="imagenFile"
+                                       class="form-control" accept="image/*"
+                                       onchange="mostrarImagen(this);"/>
+                                <img id="imagenProductoNueva" src="#"
+                                     alt="Vista previa del producto"
+                                     style="max-height:150px; display:none;"
+                                     class="mt-2"/>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                [[#{accion.cerrar}]]
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                [[#{accion.guardar}]]
+                            </button>
+                        </div>
+                    </form>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <form th:action="@{/producto/guardar}"
-                      th:object="${producto}"
-                      method="post"
-                      class="was-validated"
-                      enctype="multipart/form-data">
+    <!-- Fragmento 2: listado de productos -->
+    <section th:fragment="listado" class="container-fluid px-4 py-3">
+        <style>
+            .tabla-productos {
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .tabla-productos th,
+            .tabla-productos td {
+                vertical-align: middle;
+                overflow-wrap: anywhere;
+            }
+
+            .tabla-productos .col-id { width: 4%; }
+            .tabla-productos .col-categoria { width: 12%; }
+            .tabla-productos .col-descripcion { width: 22%; }
+            .tabla-productos .col-precio { width: 9%; }
+            .tabla-productos .col-existencias { width: 9%; }
+            .tabla-productos .col-imagen { width: 13%; }
+            .tabla-productos .col-activo { width: 8%; }
+            .tabla-productos .col-acciones { width: 23%; }
+
+            .detalle-producto {
+                color: #6c757d;
+                font-size: 0.875rem;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .imagen-producto {
+                width: 110px;
+                height: 75px;
+                object-fit: contain;
+            }
+
+            .acciones-producto {
+                white-space: nowrap;
+            }
+        </style>
+
+        <div class="row">
+            <div class="col-lg-9 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">[[#{producto.listado}]]</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover tabla-productos">
+                                <thead>
+                                    <tr>
+                                        <th class="col-id">#</th>
+                                        <th class="col-categoria">Categoría</th>
+                                        <th class="col-descripcion">Descripción</th>
+                                        <th class="col-precio">Precio</th>
+                                        <th class="col-existencias">Existencias</th>
+                                        <th class="col-imagen">Imagen</th>
+                                        <th class="col-activo">Activo</th>
+                                        <th class="col-acciones">Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="p : ${productos}">
+                                        <td th:text="${p.idProducto}"></td>
+
+                                        <td>
+                                            <span th:each="c : ${categorias}"
+                                                  th:if="${c.idCategoria == p.idCategoria}"
+                                                  th:text="${c.descripcion}"></span>
+                                        </td>
+
+                                        <td>
+                                            <div class="fw-semibold"
+                                                 th:text="${p.descripcion}"></div>
+                                            <div class="detalle-producto"
+                                                 th:if="${p.detalle != null and !p.detalle.isEmpty()}"
+                                                 th:text="${p.detalle}"
+                                                 th:title="${p.detalle}"></div>
+                                        </td>
+
+                                        <td th:text="${p.precio}"></td>
+                                        <td th:text="${p.existencias}"></td>
+
+                                        <td>
+                                            <img th:if="${p.rutaImagen != null and !p.rutaImagen.isEmpty()}"
+                                                 th:src="@{${p.rutaImagen}}"
+                                                 alt="Imagen del producto"
+                                                 class="imagen-producto"/>
+                                            <span th:if="${p.rutaImagen == null or p.rutaImagen.isEmpty()}"
+                                                  class="text-muted small">Sin imagen</span>
+                                        </td>
+
+                                        <td>
+                                            <span th:if="${p.activo}" class="badge bg-success">Activo</span>
+                                            <span th:unless="${p.activo}" class="badge bg-secondary">Inactivo</span>
+                                        </td>
+
+                                        <td class="acciones-producto">
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm mb-1"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmarEliminarProducto"
+                                                    th:data-id="${p.idProducto}"
+                                                    th:data-descripcion="${p.descripcion}">
+                                                <i class="fa-solid fa-trash"></i>
+                                                Eliminar
+                                            </button>
+
+                                            <a th:href="@{/producto/modificar/{id}(id=${p.idProducto})}"
+                                               class="btn btn-warning btn-sm mb-1">
+                                                <i class="fas fa-pencil-alt"></i>
+                                                Actualizar
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <tr th:if="${productos == null or productos.empty}">
+                                        <td colspan="8" class="text-center text-muted">
+                                            No hay productos registrados.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 mb-3">
+                <div class="card text-center bg-success text-white">
+                    <div class="card-body">
+                        <h3>[[#{producto.total}]]</h3>
+                        <h4 class="fs-2">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                            [[${totalProductos}]]
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación -->
+        <div class="modal fade" id="confirmarEliminarProducto" tabindex="-1"
+             aria-labelledby="confirmarEliminarProductoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="confirmarEliminarProductoLabel">
+                            Confirmar eliminación
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white"
+                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
 
                     <div class="modal-body">
-
-                        <div class="mb-3">
-                            <label>[[#{producto.descripcion}]]</label>
-                            <input type="text"
-                                   name="descripcion"
-                                   class="form-control"
-                                   required="true"/>
-                        </div>
-
-                        <div class="mb-3">
-                            <label>[[#{producto.activo}]]</label>
-                            <input type="checkbox"
-                                   name="activo"
-                                   class="form-check-input"/>
-                        </div>
-
-                        <div class="mb-3">
-                            <label>[[#{producto.imagen}]]</label>
-                            <input type="file"
-                                   name="imagenFile"
-                                   onchange="mostrarImagen(this);"
-                                   class="form-control"/>
-                            <img id="blah"
-                                 src="#"
-                                 alt="imagen de producto"
-                                 height="200"/>
-                        </div>
-
+                        ¿Deseas eliminar el producto
+                        <strong id="descripcionProductoEliminar"></strong>?
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal">
-                            <i class="fa-solid fa-xmark"></i>
-                            [[#{accion.cerrar}]]
-                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
 
-                        <button type="submit"
-                                class="btn btn-primary">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            [[#{accion.guardar}]]
-                        </button>
+                        <form th:action="@{/producto/eliminar}" method="post">
+                            <input type="hidden" name="idProducto"
+                                   id="idProductoEliminar"/>
+                            <button type="submit" class="btn btn-danger">
+                                Eliminar
+                            </button>
+                        </form>
                     </div>
-
-                </form>
+                </div>
             </div>
         </div>
-    </div>
 
-</section>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('confirmarEliminarProducto');
+
+                if (modal) {
+                    modal.addEventListener('show.bs.modal', function (event) {
+                        const boton = event.relatedTarget;
+                        document.getElementById('idProductoEliminar').value =
+                            boton.getAttribute('data-id');
+                        document.getElementById('descripcionProductoEliminar').textContent =
+                            boton.getAttribute('data-descripcion');
+                    });
+                }
+            });
+        </script>
+    </section>
+
+    <!-- Fragmento 3: editar producto -->
+    <section th:fragment="editar">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+                    <form method="post" th:action="@{/producto/guardar}"
+                          th:object="${producto}" enctype="multipart/form-data"
+                          class="was-validated">
+
+                        <input type="hidden" th:field="*{idProducto}"/>
+                        <input type="hidden" th:field="*{rutaImagen}"/>
+
+                        <div class="d-flex gap-2 mb-4">
+                            <a th:href="@{/producto/listado}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left"></i>
+                                [[#{accion.regresar}]]
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i>
+                                [[#{accion.guardar}]]
+                            </button>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Actualizar producto</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Categoría</label>
+                                    <select th:field="*{idCategoria}"
+                                            class="form-select" required>
+                                        <option value="">Seleccione una categoría</option>
+                                        <option th:each="c : ${categorias}"
+                                                th:value="${c.idCategoria}"
+                                                th:text="${c.descripcion}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción</label>
+                                    <input type="text" class="form-control"
+                                           th:field="*{descripcion}"
+                                           maxlength="50" required/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Detalle</label>
+                                    <textarea class="form-control" rows="3"
+                                              th:field="*{detalle}"></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Precio</label>
+                                        <input type="number" class="form-control"
+                                               th:field="*{precio}"
+                                               min="0.01" step="0.01" required/>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Existencias</label>
+                                        <input type="number" class="form-control"
+                                               th:field="*{existencias}"
+                                               min="0" step="1" required/>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input"
+                                           th:field="*{activo}"/>
+                                    <label class="form-check-label" for="activo">
+                                        Activo
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Imagen</label>
+                                    <input type="file" name="imagenFile"
+                                           class="form-control" accept="image/*"
+                                           onchange="mostrarImagen(this);"/>
+
+                                    <img th:if="${producto.rutaImagen != null and !producto.rutaImagen.isEmpty()}"
+                                         th:src="@{${producto.rutaImagen}}"
+                                         alt="Imagen actual del producto"
+                                         class="mt-2"
+                                         style="max-height:180px; max-width:100%;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
