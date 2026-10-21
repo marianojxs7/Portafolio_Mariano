@@ -52,5 +52,4 @@ public class CategoriaService {
         return categoriaRepository.findById(categoria.getIdCategoria())
                 .orElse(null);
     }
-
 }
