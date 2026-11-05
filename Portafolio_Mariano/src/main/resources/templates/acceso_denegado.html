@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{General/fragmentos :: head}"></head>
+
+    <body>
+
+        <header th:replace="~{General/fragmentos :: header}"></header>
+
+        <main class="container text-center py-5">
+
+            <i class="fa-solid fa-ban text-danger"
+               style="font-size: 5rem;"></i>
+
+            <h1 class="mt-4">Acceso denegado</h1>
+
+            <p class="lead">
+                No tienes permisos para acceder a esta sección.
+            </p>
+
+            <a th:href="@{/}" class="btn btn-primary mt-3">
+                <i class="fa-solid fa-house"></i>
+                Regresar al inicio
+            </a>
+
+        </main>
+
+        <footer th:replace="~{General/fragmentos :: footer}"></footer>
+
+    </body>
+</html>

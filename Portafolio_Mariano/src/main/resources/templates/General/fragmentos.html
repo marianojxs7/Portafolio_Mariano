@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <head th:fragment="head">
         <title th:text="#{aplicacion.titulo}">TechShop</title>
@@ -52,7 +52,8 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('ADMIN','VENDEDOR')">
                                 <a class="nav-link"
                                    th:href="@{/categoria/listado}"
                                    th:text="#{plantilla.categorias}">
@@ -60,7 +61,8 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('ADMIN','VENDEDOR')">
                                 <a class="nav-link"
                                    th:href="@{/producto/listado}"
                                    th:text="#{plantilla.productos}">
@@ -70,15 +72,46 @@
 
                             <li class="nav-item">
                                 <a class="nav-link"
-                                   th:href="@{/consultas/listado}"
-                                   th:text="#{plantilla.consultas}">
+                                   th:href="@{/consultas/listado}">
                                     Consultas
                                 </a>
                             </li>
 
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   id="extrasDropdown"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false"
+                                   th:text="#{plantilla.extras}">
+                                    Extras
+                                </a>
+
+                                <ul class="dropdown-menu"
+                                    aria-labelledby="extrasDropdown">
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           th:href="@{/multimedia}">
+                                            Multimedia
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           th:href="@{/iframes}">
+                                            Iframes
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
                         </ul>
 
-                        <div class="dropdown">
+                        <!-- Selector de idiomas -->
+                        <div class="dropdown me-2">
                             <button class="btn btn-outline-primary dropdown-toggle"
                                     type="button"
                                     id="idiomaDropdown"
@@ -120,6 +153,33 @@
                                 </li>
 
                             </ul>
+                        </div>
+
+                        <!-- Usuario no autenticado -->
+                        <a sec:authorize="isAnonymous()"
+                           th:href="@{/login}"
+                           class="btn btn-outline-success">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Iniciar sesión
+                        </a>
+
+                        <!-- Usuario autenticado -->
+                        <div sec:authorize="isAuthenticated()"
+                             class="d-flex align-items-center gap-2">
+
+                            <span class="text-dark">
+                                <i class="fas fa-user"></i>
+                                <span sec:authentication="name"></span>
+                            </span>
+
+                            <form method="POST" th:action="@{/logout}">
+                                <button type="submit"
+                                        class="btn btn-outline-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Cerrar sesión
+                                </button>
+                            </form>
+
                         </div>
 
                     </div>
