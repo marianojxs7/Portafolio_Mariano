@@ -1,8 +1,10 @@
+
 package com.Portafolio.service;
 
 import com.Portafolio.domain.Producto;
 import com.Portafolio.repository.ProductoRepository;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,10 +40,8 @@ public class ProductoService {
 
     @Transactional
     public void save(Producto producto, MultipartFile imagenFile) {
-        // Guardamos primero para obtener el ID del producto.
         producto = productoRepository.save(producto);
 
-        // Solo actualizamos la imagen si se seleccionó una nueva.
         if (imagenFile != null && !imagenFile.isEmpty()) {
             try {
                 String rutaImagen =
@@ -73,4 +73,28 @@ public class ProductoService {
         }
     }
 
+    // Consulta derivada
+    @Transactional(readOnly = true)
+    public List<Producto> consultaDerivada(
+            BigDecimal precioInf,
+            BigDecimal precioSup) {
+        return productoRepository.findByPrecioBetweenOrderByPrecioAsc(
+                precioInf, precioSup);
+    }
+
+    // Consulta JPQL
+    @Transactional(readOnly = true)
+    public List<Producto> consultaJPQL(
+            BigDecimal precioInf,
+            BigDecimal precioSup) {
+        return productoRepository.consultaJPQL(precioInf, precioSup);
+    }
+
+    // Consulta SQL nativa
+    @Transactional(readOnly = true)
+    public List<Producto> consultaSQL(
+            BigDecimal precioInf,
+            BigDecimal precioSup) {
+        return productoRepository.consultaSQL(precioInf, precioSup);
+    }
 }

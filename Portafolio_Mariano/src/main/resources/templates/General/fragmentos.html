@@ -1,11 +1,9 @@
 
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras-springsecurity6">
 
-    <!-- Fragmento general: head -->
     <head th:fragment="head">
         <title th:text="#{aplicacion.titulo}">TechShop</title>
         <meta charset="UTF-8"/>
@@ -23,10 +21,8 @@
 
     <body>
 
-        <!-- Fragmento general: header -->
         <header th:fragment="header">
 
-            <!-- Menú principal -->
             <nav class="navbar navbar-expand-lg navbar-light bg-white">
                 <div class="container">
 
@@ -72,40 +68,16 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle"
-                                   href="#"
-                                   id="extrasDropdown"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false"
-                                   th:text="#{plantilla.extras}">
-                                    Extras
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   th:href="@{/consultas/listado}"
+                                   th:text="#{plantilla.consultas}">
+                                    Consultas
                                 </a>
-
-                                <ul class="dropdown-menu"
-                                    aria-labelledby="extrasDropdown">
-
-                                    <li>
-                                        <a class="dropdown-item"
-                                           th:href="@{/multimedia}">
-                                            Multimedia
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item"
-                                           th:href="@{/iframes}">
-                                            Iframes
-                                        </a>
-                                    </li>
-
-                                </ul>
                             </li>
 
                         </ul>
 
-                        <!-- Selector de idiomas -->
                         <div class="dropdown">
                             <button class="btn btn-outline-primary dropdown-toggle"
                                     type="button"
@@ -154,7 +126,6 @@
                 </div>
             </nav>
 
-            <!-- Franja verde -->
             <div class="container-fluid bg-success text-white py-2">
                 <div class="container">
                     <h2 class="mb-0 py-1">
@@ -168,7 +139,6 @@
 
         </header>
 
-        <!-- Fragmento general: footer -->
         <footer th:fragment="footer"
                 class="container-fluid text-white py-2 mt-4"
                 style="background-color: #0dcaf0;">
@@ -184,7 +154,6 @@
 
         </footer>
 
-        <!-- Fragmento general: mostrarToast -->
         <section th:fragment="mostrarToast">
 
             <div aria-live="polite"
@@ -192,7 +161,6 @@
                  class="position-fixed top-50 start-50 translate-middle"
                  style="z-index: 1080;">
 
-                <!-- Mensaje de error -->
                 <div th:if="${error}"
                      class="toast show"
                      role="alert"
@@ -215,7 +183,6 @@
                     </div>
                 </div>
 
-                <!-- Mensaje de operación exitosa -->
                 <div th:if="${todoOk}"
                      class="toast show"
                      role="status"

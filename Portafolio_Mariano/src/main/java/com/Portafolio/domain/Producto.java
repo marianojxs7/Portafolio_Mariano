@@ -1,9 +1,13 @@
+
 package com.Portafolio.domain;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -17,7 +21,11 @@ public class Producto implements Serializable {
     @Column(name = "id_producto")
     private Integer idProducto;
 
-    private Integer idCategoria;
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Categoria categoria;
 
     @Column(nullable = false, length = 50)
     @NotBlank(message = "La descripción no puede estar vacía.")
@@ -40,6 +48,4 @@ public class Producto implements Serializable {
     private String rutaImagen;
 
     private boolean activo;
-
-  
 }

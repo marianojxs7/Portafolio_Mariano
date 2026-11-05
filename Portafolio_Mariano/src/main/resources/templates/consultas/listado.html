@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{General/fragmentos :: head}"></head>
+
+    <body>
+
+        <header th:replace="~{General/fragmentos :: header}"></header>
+
+        <section th:replace="~{consultas/fragmentos :: consultas}"></section>
+
+        <section th:replace="~{consultas/fragmentos :: tarjetas(false)}"></section>
+
+        <footer th:replace="~{General/fragmentos :: footer}"></footer>
+
+    </body>
+</html>
