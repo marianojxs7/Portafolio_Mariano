@@ -1,4 +1,3 @@
-
 package com.Portafolio.repository;
 
 import com.Portafolio.domain.Producto;
@@ -12,7 +11,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     public List<Producto> findByActivoTrue();
 
-    // Consulta derivada
+    // Consulta derivada por rango de precios
     public List<Producto> findByPrecioBetweenOrderByPrecioAsc(
             BigDecimal precioInf,
             BigDecimal precioSup);
@@ -33,4 +32,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     public List<Producto> consultaSQL(
             @Param("precioInf") BigDecimal precioInf,
             @Param("precioSup") BigDecimal precioSup);
+
+    // Práctica #2: productos según existencias mínimas
+    public List<Producto> findByExistenciasGreaterThanEqualOrderByExistenciasDesc(
+            Integer existenciasMinimas);
 }

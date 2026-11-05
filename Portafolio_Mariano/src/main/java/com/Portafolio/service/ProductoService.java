@@ -1,4 +1,3 @@
-
 package com.Portafolio.service;
 
 import com.Portafolio.domain.Producto;
@@ -96,5 +95,13 @@ public class ProductoService {
             BigDecimal precioInf,
             BigDecimal precioSup) {
         return productoRepository.consultaSQL(precioInf, precioSup);
+    }
+
+    // Práctica #2: consulta de productos por existencias mínimas
+    @Transactional(readOnly = true)
+    public List<Producto> consultaExistencias(Integer existenciasMinimas) {
+        return productoRepository
+                .findByExistenciasGreaterThanEqualOrderByExistenciasDesc(
+                        existenciasMinimas);
     }
 }

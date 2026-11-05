@@ -1,4 +1,3 @@
-
 package com.Portafolio.controller;
 
 import com.Portafolio.service.ProductoService;
@@ -71,6 +70,21 @@ public class ConsultaController {
         model.addAttribute("productos", productos);
         model.addAttribute("precioInf", precioInf);
         model.addAttribute("precioSup", precioSup);
+
+        return "consultas/listado";
+    }
+
+    // Práctica #2: consulta por existencias mínimas
+    @PostMapping("/consultaExistencias")
+    public String consultaExistencias(
+            @RequestParam Integer existenciasMinimas,
+            Model model) {
+
+        var productos =
+                productoService.consultaExistencias(existenciasMinimas);
+
+        model.addAttribute("productos", productos);
+        model.addAttribute("existenciasMinimas", existenciasMinimas);
 
         return "consultas/listado";
     }
