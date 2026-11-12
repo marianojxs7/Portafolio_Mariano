@@ -1,8 +1,7 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <body>
 
@@ -12,7 +11,7 @@
                 <div class="col-md-1"></div>
                 <div class="col-md-3">
                     <button type="button" class="btn btn-primary"
-                            sec:authorize="hasRole('ROLE_ADMIN')"
+                            sec:authorize="hasAuthority('ROLE_ADMIN')"
                             data-bs-toggle="modal"
                             data-bs-target="#agregarCategoriaModal">
                         <i class="fa-solid fa-plus"></i>
@@ -121,6 +120,7 @@
                                             <td th:text="${c.activo} ? 'Activa' : 'Inactiva'"></td>
                                             <td>
                                                 <button type="button"
+                                                        sec:authorize="hasAuthority('ROLE_ADMIN')"
                                                         class="btn btn-danger"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#confirmModal"
@@ -130,7 +130,8 @@
                                                     [[#{accion.eliminar}]]
                                                 </button>
 
-                                                <a th:href="@{/categoria/modificar/{id}(id=${c.idCategoria})}"
+                                                <a sec:authorize="hasAuthority('ROLE_ADMIN')"
+                                                   th:href="@{/categoria/modificar/{id}(id=${c.idCategoria})}"
                                                    class="btn btn-warning">
                                                     <i class="fas fa-pencil-alt"></i>
                                                     [[#{accion.actualizar}]]

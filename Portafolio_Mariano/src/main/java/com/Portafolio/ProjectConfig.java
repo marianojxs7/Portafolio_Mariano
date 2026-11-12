@@ -2,17 +2,17 @@
 package com.Portafolio;
 
 import java.util.Locale;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -168,29 +168,15 @@ public class ProjectConfig implements WebMvcConfigurer {
         return new BCryptPasswordEncoder();
     }
 
-    // Usuarios temporales en memoria para la fase de desarrollo
-    @Bean
-    public UserDetailsService users(PasswordEncoder passwordEncoder) {
+    // Configuración de usuarios desde la base de datos
+    @Autowired
+    public void configureGlobal(
+            AuthenticationManagerBuilder build,
+            @Lazy PasswordEncoder passwordEncoder,
+            @Lazy UserDetailsService userDetailsService)
+            throws Exception {
 
-        UserDetails admin = User.builder()
-                .username("juan")
-                .password(passwordEncoder.encode("123"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails vendedor = User.builder()
-                .username("rebeca")
-                .password(passwordEncoder.encode("456"))
-                .roles("VENDEDOR")
-                .build();
-
-        UserDetails usuario = User.builder()
-                .username("pedro")
-                .password(passwordEncoder.encode("789"))
-                .roles("USUARIO")
-                .build();
-
-        return new InMemoryUserDetailsManager(
-                admin, vendedor, usuario);
+        build.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
     }
 }
